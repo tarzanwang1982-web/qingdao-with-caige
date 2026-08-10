@@ -7,6 +7,7 @@
   <meta name="description" content="才哥精选的青岛旅行路线、景点、天气建议与高德逐段导航。">
   <title>跟着才哥游青岛</title>
   <link rel="stylesheet" href="assets/styles.css">
+  <link rel="stylesheet" href="assets/amap.css">
 </head>
 <body>
   <a class="skip" href="#main">跳到主要内容</a>
@@ -37,8 +38,28 @@
     </section>
 
     <section class="map-stage" aria-labelledby="mapTitle">
-      <div class="map-copy"><span>全城线路图</span><h2 id="mapTitle">地点与路线，直接画出来</h2><p>点击路线或自己勾选地点，地图会自动更新顺序。地图是本站重新绘制的坐标示意，不使用 PDF 中的地图图案。</p><div class="legend"><i class="sea"></i>海岸方向 <i class="route"></i>当前路线 <i class="point"></i>地点</div></div>
-      <div class="city-map"><svg id="routeMap" viewBox="0 0 1000 600" role="img" aria-label="青岛地点与路线示意图"></svg><div class="map-note">线路示意 · 实际道路与耗时以高德实时结果为准</div></div>
+      <div class="map-copy">
+        <span>全城线路图</span><h2 id="mapTitle">每一站，都在地图上</h2>
+        <p>高德提供地图底图与道路数据，本站负责把起点、全部景点、游览顺序和分段耗时清楚地标在同一张地图上。</p>
+        <div class="legend"><i class="sea"></i>地图底图 <i class="route"></i>当前路线 <i class="point"></i>编号地点</div>
+        <div class="amap-config-note" id="amapSetupNote"><b>高德实景地图等待一次配置</b>配置 Web 端 JS API Key 后，这里会自动显示完整的多站路线；配置前仍显示原有路线示意。</div>
+      </div>
+      <div class="city-map">
+        <svg id="routeMap" viewBox="0 0 1000 600" role="img" aria-label="青岛地点与路线示意图"></svg>
+        <div class="amap-shell" id="amapShell">
+          <div class="amap-canvas" id="amapMap" aria-label="青岛多站旅行地图"></div>
+          <div class="amap-controls" aria-label="地图交通方式">
+            <button class="amap-mode active" data-mode="smart" type="button">智能</button>
+            <button class="amap-mode" data-mode="walk" type="button">步行</button>
+            <button class="amap-mode" data-mode="bus" type="button">公交</button>
+            <button class="amap-mode" data-mode="car" type="button">驾车</button>
+            <button class="amap-mode" data-mode="ride" type="button">骑行</button>
+          </div>
+          <div class="segment-board" id="mapSegments"></div>
+          <div class="amap-status" id="amapStatus">正在准备地图…</div>
+        </div>
+        <div class="map-note">路线与耗时会随起点和所选景点重新计算</div>
+      </div>
     </section>
 
     <section class="section place-section" id="places">
@@ -77,5 +98,7 @@
 
   <footer><div><b>跟着才哥游青岛</b><p>免费分享给亲友使用。路线仅供旅行参考，安全与开放信息以现场及官方公告为准。</p></div><div><a href="#routes">路线</a><a href="#places">地点</a><a href="#planner">规划</a></div></footer>
   <script src="assets/app.js"></script>
+  <script src="assets/amap-config.js"></script>
+  <script src="assets/amap-enhance.js"></script>
 </body>
 </html>
