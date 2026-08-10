@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#0b4453">
+  <meta name="description" content="才哥精选的青岛旅行路线、景点、天气建议与高德逐段导航。">
+  <title>跟着才哥游青岛</title>
+  <link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+  <a class="skip" href="#main">跳到主要内容</a>
+  <header class="nav">
+    <a class="brand" href="#top" aria-label="返回首页"><span>才</span><b>跟着才哥游青岛</b></a>
+    <nav aria-label="主要导航"><a href="#routes">推荐路线</a><a href="#places">地点库</a><a href="#planner">智能规划</a></nav>
+    <a class="nav-cta" href="#planner">规划行程</a>
+  </header>
+
+  <main id="main">
+    <section class="hero" id="top">
+      <div class="hero-photo" role="img" aria-label="青岛海岸与红瓦老城"></div>
+      <div class="hero-copy">
+        <p>一位青岛人整理的全年龄旅行指南</p>
+        <h1>跟着才哥<br>游青岛</h1>
+        <h2>像本地人一样，走懂青岛。</h2>
+        <div class="hero-actions"><a class="button primary" href="#routes">先看才哥路线</a><a class="button ghost" href="#planner">自己选地点</a></div>
+      </div>
+      <div class="hero-weather" id="heroWeather"><span>青岛今日</span><strong>读取天气中</strong><small>天气会参与规划，不替你制造焦虑</small></div>
+      <div class="hero-line" aria-hidden="true"><svg viewBox="0 0 800 240"><path d="M10 205 C130 180 185 70 300 105 S490 220 585 95 S710 35 790 30"/><circle cx="10" cy="205" r="7"/><circle cx="300" cy="105" r="7"/><circle cx="585" cy="95" r="7"/><circle cx="790" cy="30" r="7"/></svg></div>
+    </section>
+
+    <section class="weather-strip" id="weatherPanel" aria-live="polite"></section>
+
+    <section class="section" id="routes">
+      <header class="section-head"><div><span>才哥推荐路线</span><h2>先选一种青岛的打开方式</h2></div><p>每条路线都有独立封面、地图预览、季节建议和逐段导航。路线示意不替代实时路况，出发时以高德为准。</p></header>
+      <div class="route-grid" id="routeGrid"></div>
+    </section>
+
+    <section class="map-stage" aria-labelledby="mapTitle">
+      <div class="map-copy"><span>全城线路图</span><h2 id="mapTitle">地点与路线，直接画出来</h2><p>点击路线或自己勾选地点，地图会自动更新顺序。地图是本站重新绘制的坐标示意，不使用 PDF 中的地图图案。</p><div class="legend"><i class="sea"></i>海岸方向 <i class="route"></i>当前路线 <i class="point"></i>地点</div></div>
+      <div class="city-map"><svg id="routeMap" viewBox="0 0 1000 600" role="img" aria-label="青岛地点与路线示意图"></svg><div class="map-note">线路示意 · 实际道路与耗时以高德实时结果为准</div></div>
+    </section>
+
+    <section class="section place-section" id="places">
+      <header class="section-head"><div><span>才哥地点库</span><h2>不只经典景点，也收录吃逛与亲子</h2></div><p>首批扩充为海景、博物馆、公园、游乐亲子、美食街与购物六类。信息会持续复核，开放时间和预约以场馆当天公告为准。</p></header>
+      <div class="filters" id="filters" aria-label="地点分类筛选"></div>
+      <div class="place-grid" id="placeGrid"></div>
+      <button class="more" id="morePlaces" type="button">显示更多地点</button>
+    </section>
+
+    <section class="planner" id="planner">
+      <div class="planner-controls">
+        <span>智能行程规划</span><h2>你选地点，<br>我来把顺序走顺。</h2>
+        <label>游玩日期<input id="travelDate" type="date"></label>
+        <label>出发时间<input id="startTime" type="time" value="09:00"></label>
+        <label>出发地点<input id="startPlace" list="placeNames" placeholder="如：青岛站，也可使用当前位置"><datalist id="placeNames"></datalist></label>
+        <button class="locate" id="locate" type="button">使用我的当前位置</button>
+        <div class="form-row"><label>出行偏好<select id="transport"><option value="smart">综合推荐</option><option value="walk">尽量步行</option><option value="bus">公交优先</option><option value="car">打车优先</option></select></label><label>游览节奏<select id="pace"><option value="normal">标准游</option><option value="slow">慢慢逛</option><option value="fast">紧凑游</option></select></label></div>
+        <div class="selection"><b id="selectedCount">0</b><span>个已选地点</span><button id="clearSelection" type="button">清空</button></div>
+      </div>
+      <div class="planner-result">
+        <div class="result-head"><div><span>为你整理的路线</span><h3 id="planTitle">先从地点库勾选想去的地方</h3></div><strong id="planTotal">0 小时</strong></div>
+        <div id="planWeather"></div>
+        <ol class="timeline" id="timeline"></ol>
+        <div class="planner-actions"><button class="button primary" id="saveShare" type="button" disabled>生成并复制专属链接</button><a class="button outline" id="openFirstNav" href="#" target="_blank" rel="noreferrer" aria-disabled="true">打开第一段高德导航</a></div>
+        <p class="share-status" id="shareStatus" aria-live="polite"></p>
+      </div>
+    </section>
+
+    <section class="season-notes">
+      <article><span>春</span><h3>花与老城</h3><p>海风仍凉，信号山、中山公园和八大关适合慢走。</p></article>
+      <article><span>夏</span><h3>早晚看海</h3><p>正午留给博物馆与午餐，暑期海边注意防晒和人流。</p></article>
+      <article><span>秋</span><h3>山海好时节</h3><p>把天气最好的一天留给崂山，昼夜温差开始明显。</p></article>
+      <article><span>冬</span><h3>建筑与热饭</h3><p>缩短迎风海岸停留，关注积雪结冰和场馆开放变化。</p></article>
+    </section>
+  </main>
+
+  <footer><div><b>跟着才哥游青岛</b><p>免费分享给亲友使用。路线仅供旅行参考，安全与开放信息以现场及官方公告为准。</p></div><div><a href="#routes">路线</a><a href="#places">地点</a><a href="#planner">规划</a></div></footer>
+  <script src="assets/app.js"></script>
+</body>
+</html>
