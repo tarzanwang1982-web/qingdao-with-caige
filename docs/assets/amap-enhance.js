@@ -23,14 +23,33 @@
 
   let map,currentIds=[],accurateStart=null,activeMode='smart',renderToken=0,hoverInfo=null;
   let overlays=[],routeOverlays=[];
+  const cacheKey='caige-amap-poi-v4';
   const pointCache=readCache();
+  const seedById=Object.fromEntries(places.map(place=>[place.id,{lng:Number(place.lng),lat:Number(place.lat)}]));
+  const pinnedPoints={
+    zhanqiao:{lng:120.319300,lat:36.061736,poiId:'B0FFG19SSX',poiName:'栈桥景区'}
+  };
+  const poiQueries={
+    'qingdao-station':'青岛站','zhanqiao':'栈桥景区','yin-yu-lane':'银鱼巷','zhongshan-road':'青岛中山路步行街',
+    'catholic-church':'天主教青岛教区圣弥厄尔主教座堂天主堂','christ-church':'青岛基督教堂','signal-hill':'信号山公园',
+    'governor-house':'青岛德国总督楼旧址博物馆','navy-museum':'中国人民解放军海军博物馆','xiaoqingdao':'小青岛公园',
+    'qinyu-road':'琴屿路','luxun-park':'鲁迅公园','underwater-world':'青岛海底世界','xiaoyushan':'小鱼山公园',
+    'first-beach':'青岛第一海水浴场','zhanshan-temple':'湛山寺','badaguan':'八大关风景区','second-beach':'青岛第二海水浴场',
+    'taipingjiao':'太平角公园','may-fourth':'五四广场','olympic-sailing':'青岛奥帆中心','mixc':'青岛万象城',
+    'taidong':'台东步行街','beer-museum':'青岛啤酒博物馆','zhongshan-park':'青岛中山公园','polar-ocean':'青岛极地海洋公园',
+    'xiaomai-island':'小麦岛公园','yanerdao':'燕儿岛山公园','stone-oldman':'石老人海水浴场','qingdao-museum':'青岛市博物馆',
+    'lion-mall':'金狮广场','fushan-forest':'浮山森林公园','laoshan-yangkou':'崂山风景区仰口游览区',
+    'laoshan-taiqing':'崂山风景区太清游览区','science-museum':'青岛科技馆','fangte':'青岛方特梦幻王国',
+    'wildlife':'青岛森林野生动物世界','golden-beach':'青岛金沙滩景区','tangdao-bay':'唐岛湾滨海公园',
+    'lijiang-night':'李村夜市','licun-mall':'李村步行街','mix-sea-market':'浮山所农贸市场','city-memory':'青岛城市展览馆'
+  };
   const routeCache=new Map();
   const baseDrawMap=window.drawMap;
   const baseBuildPlan=window.buildPlan;
   const baseStartPoint=window.startPoint;
 
-  function readCache(){try{return JSON.parse(localStorage.getItem('caige-amap-poi-v2')||'{}')}catch{return {}}}
-  function saveCache(){try{localStorage.setItem('caige-amap-poi-v2',JSON.stringify(pointCache))}catch{}}
+  function readCache(){try{return JSON.parse(localStorage.getItem(cacheKey)||'{}')}catch{return {}}}
+  function saveCache(){try{localStorage.setItem(cacheKey,JSON.stringify(pointCache))}catch{}}
   function lngLat(location){if(!location)return null;return{lng:Number(location.lng??location[0]),lat:Number(location.lat??location[1])}}
   function pointArray(p){return[p.lng,p.lat]}
   function delay(ms){return new Promise(resolve=>setTimeout(resolve,ms))}
@@ -58,26 +77,38 @@
     const text=startPlace.value.trim();if(!text)return;
     const exact=places.find(p=>p.name===text||p.name.includes(text));
     if(exact){const p=await resolvePlace(exact);accurateStart={...p,name:exact.name,id:`start-${exact.id}`};return}
-    accurateStart=await searchPoint(text,'typed-start');
+    accurateStart=await searchPoint(text,`typed-start-${normalize(text)}`);
     if(accurateStart)accurateStart.name=text;
   }
   function convertGps(p){return new Promise(resolve=>AMap.convertFrom([p.lng,p.lat],'gps',(status,result)=>{const loc=status==='complete'&&result.locations?.[0];resolve(loc?{...lngLat(loc),name:p.name,id:p.id||'gps-start'}:p)}))}
-  function searchPoint(keyword,key){
+  function normalize(value){return String(value||'').replace(/[·\s()（）\-—]/g,'').replace(/青岛市?/g,'').replace(/景区|风景区/g,'')}
+  function poiScore(poi,keyword,seed){
+    const name=normalize(poi.name),target=normalize(keyword),type=String(poi.type||''),address=String(poi.address||'');
+    let score=name===target?100:name.includes(target)||target.includes(name)?66:0;
+    if(/风景名胜|公园广场|博物馆|科教文化|海滨浴场|体育休闲|文化场馆|购物服务/.test(type))score+=24;
+    if(/地铁站|公交车站|住宅区|餐饮服务|住宿服务|公司企业|停车场|生活服务/.test(type))score-=75;
+    if(/市南区|市北区|崂山区|李沧区|黄岛区|城阳区|即墨区/.test(address))score+=5;
+    if(seed&&poi.location){const point=lngLat(poi.location),distance=distanceKm(seed,point);score+=Math.max(-120,30-distance*18)}
+    return score;
+  }
+  function searchPoint(keyword,key,seed){
     if(pointCache[key])return Promise.resolve({...pointCache[key],id:key,name:keyword});
     return new Promise(resolve=>{
-      const search=new AMap.PlaceSearch({city:'青岛',citylimit:true,pageSize:8,extensions:'base'});
-      search.search(`${keyword} 青岛`,(state,result)=>{
+      const query=poiQueries[key]||keyword;
+      const search=new AMap.PlaceSearch({city:'青岛',citylimit:true,pageSize:20,extensions:'all'});
+      search.search(query,(state,result)=>{
         const pois=state==='complete'?result.poiList?.pois||[]:[];
-        const normalized=keyword.replace(/[·\s]/g,'');
-        const poi=pois.find(x=>String(x.name).replace(/[·\s]/g,'').includes(normalized))||pois[0];
+        const ranked=pois.filter(poi=>poi?.location).map(poi=>({poi,score:poiScore(poi,query,seed)})).sort((a,b)=>b.score-a.score);
+        const poi=ranked[0]?.score>=20?ranked[0].poi:null;
         if(!poi?.location){resolve(null);return}
-        const value={...lngLat(poi.location),name:poi.name,id:key,poiId:poi.id||''};pointCache[key]=value;saveCache();resolve(value);
+        const value={...lngLat(poi.location),name:poi.name,id:key,poiId:poi.id||'',poiType:poi.type||'',poiAddress:poi.address||''};pointCache[key]=value;saveCache();resolve(value);
       });
     });
   }
   async function resolvePlace(place){
+    const pinned=pinnedPoints[place.id];if(pinned){const value={...pinned,id:place.id,name:place.name};pointCache[place.id]=value;saveCache();Object.assign(place,{lng:value.lng,lat:value.lat});return value}
     const cached=pointCache[place.id];if(cached){Object.assign(place,{lng:cached.lng,lat:cached.lat});return{...cached,name:place.name,id:place.id}}
-    const searched=await searchPoint(place.name,place.id);
+    const searched=await searchPoint(place.name,place.id,seedById[place.id]);
     if(searched){Object.assign(place,{lng:searched.lng,lat:searched.lat});return{...searched,name:place.name,id:place.id}}
     const converted=await convertGps(place);Object.assign(place,{lng:converted.lng,lat:converted.lat});return{...converted,name:place.name,id:place.id};
   }
