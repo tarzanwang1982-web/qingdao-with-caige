@@ -1,0 +1,74 @@
+:root{
+  --planner-page:#e9eeed;
+  --planner-panel:#fbfdfc;
+  --planner-inset:#f1f5f4;
+  --planner-border:rgba(16,38,38,.07);
+  --planner-shadow:0 1px 3px rgba(19,61,74,.05);
+  --planner-shadow-lg:0 40px 90px -50px rgba(19,61,74,.34)
+}
+
+.planner-page{background:var(--planner-page);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif}
+.planner-page .nav{position:sticky;top:0;color:var(--ink)}
+.planner-nav nav .active{color:var(--harbor);font-weight:800}
+.planner-workspace{max-width:1540px;margin:0 auto;padding:42px 24px 80px}
+.workspace-head{display:grid;grid-template-columns:minmax(0,1fr) minmax(300px,480px);align-items:end;gap:32px;margin:12px 0 28px}
+.workspace-head span,.planner-map-head span{display:block;margin-bottom:8px;color:var(--harbor);font-size:12px;font-weight:800}
+.workspace-head h1{max-width:850px;margin:0;font-size:48px;line-height:1;letter-spacing:-.045em;text-wrap:balance}
+.workspace-head p{margin:0;color:var(--ink2);font-size:14px;line-height:1.75;text-wrap:pretty}
+
+.planner-map-card{position:relative;padding:12px;border:1px solid var(--planner-border);border-radius:24px;background:var(--planner-panel);box-shadow:var(--planner-shadow-lg)}
+.planner-map-head{min-height:84px;padding:12px 12px 18px;display:flex;align-items:center;justify-content:space-between;gap:24px}
+.planner-map-head h2{margin:0;font-size:24px;letter-spacing:-.025em;text-wrap:balance}
+.map-head-actions{display:flex;align-items:center;justify-content:flex-end;gap:18px}
+.fullscreen-map{min-height:44px;padding:0 16px;border:1px solid rgba(8,120,138,.22);border-radius:12px;background:var(--harbor);color:#f6fcfb;font-weight:800;cursor:pointer;touch-action:manipulation}
+.fullscreen-map:hover{background:var(--deep)}
+.fullscreen-map:focus-visible,.place-select:focus-visible,.compact-filters button:focus-visible{outline:0;box-shadow:0 0 0 3px rgba(8,120,138,.18)}
+.planner-city-map,.planner-city-map .amap-canvas{min-height:clamp(680px,72vh,900px)}
+.planner-map-card>.amap-config-note{margin:10px 4px 0}
+.planner-map-card.map-expanded{position:fixed;inset:0;z-index:2000;width:100%;height:100dvh;padding:10px;border:0;border-radius:0;background:var(--planner-panel)}
+.planner-map-card.map-expanded .planner-map-head{min-height:64px;padding:4px 8px 10px}
+.planner-map-card.map-expanded .planner-city-map,.planner-map-card.map-expanded .amap-canvas{height:calc(100dvh - 86px);min-height:0;border-radius:14px}
+.planner-map-card.map-expanded>.amap-config-note{display:none}
+body.map-open{overflow:hidden}
+
+.planner-weather{margin:18px 0;border:1px solid var(--planner-border);border-radius:18px;overflow:auto;box-shadow:var(--planner-shadow)}
+.place-console{padding:24px;border:1px solid var(--planner-border);border-radius:22px;background:var(--planner-panel);box-shadow:var(--planner-shadow)}
+.console-head{display:flex;align-items:center;justify-content:space-between;gap:24px;margin-bottom:18px}
+.console-head h2{margin:0 0 5px;font-size:24px;letter-spacing:-.025em}.console-head p{margin:0;color:var(--ink2);font-size:13px}
+.selection-compact{min-width:205px;padding:0;border:0;justify-content:flex-end}.selection-compact b{font-variant-numeric:tabular-nums}.selection-compact button{min-height:44px;padding:0 10px}
+
+.category-chart{display:grid;grid-template-columns:minmax(260px,1fr) 2fr;gap:18px;align-items:center;padding:14px 16px;border-radius:15px;background:var(--planner-inset)}
+.category-legend{display:flex;flex-wrap:wrap;gap:7px 12px}
+.category-legend span{display:inline-flex;align-items:center;gap:6px;color:var(--ink2);font-size:11px}.category-legend i{width:8px;height:8px;border-radius:50%;background:var(--cat-color)}
+.category-bar{height:12px;display:flex;overflow:hidden;border-radius:999px;background:#dce7e5}.category-bar span{width:var(--share);background:var(--cat-color)}
+.compact-filters{margin:16px 0 13px;gap:7px}.compact-filters .filter{min-height:44px;padding:0 13px;border-radius:11px;display:inline-flex;align-items:center;gap:7px}.compact-filters .filter small{font-size:10px;opacity:.7;font-variant-numeric:tabular-nums}
+
+.compact-place-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.compact-place-grid .place-card{min-width:0;border-radius:14px;background:var(--planner-inset);box-shadow:none}
+.compact-place-grid .place-select{min-height:94px;padding:12px;display:grid;grid-template-columns:38px minmax(0,1fr) 28px;grid-template-rows:auto auto;align-items:center;gap:5px 10px}
+.place-symbol{grid-row:1/3;width:38px;height:38px;border-radius:11px;display:grid;place-items:center;background:var(--accent-soft,rgba(8,120,138,.1));color:var(--harbor);font-size:14px;font-weight:900}
+.place-title-row{display:flex;align-items:center;gap:7px;min-width:0}.place-title-row h3{margin:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:14px}.place-title-row span{flex:0 0 auto;color:var(--ink2);font-size:9px}
+.place-metrics{display:flex;gap:5px;min-width:0;overflow:hidden}.place-metrics span{padding:3px 6px;border-radius:6px;background:rgba(8,120,138,.07);color:var(--ink2);font-size:9px;white-space:nowrap}
+.compact-place-grid .check{grid-column:3;grid-row:1/3;justify-self:end;width:26px;height:26px;border-radius:8px}
+.compact-place-grid .place-card.selected{background:#e5f1ef;box-shadow:inset 0 0 0 1px rgba(8,120,138,.22)}
+.compact-place-grid .place-booking{min-height:40px;padding:0 10px}.compact-place-grid .place-booking a{min-height:40px}
+
+.planner-console{margin-top:18px;border:1px solid var(--planner-border);border-radius:22px;overflow:hidden;background:var(--planner-panel);box-shadow:var(--planner-shadow);grid-template-columns:minmax(300px,420px) minmax(0,1fr)}
+.planner-console .planner-controls{padding:32px 28px}.planner-console .planner-controls h2{margin:0 0 24px;font-size:24px}.planner-console .planner-result{padding:32px}
+.app-support{display:none!important}
+
+@media(max-width:980px){
+  .workspace-head{grid-template-columns:1fr}.workspace-head h1{font-size:40px}.compact-place-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.planner-console{grid-template-columns:1fr}.category-chart{grid-template-columns:1fr}.planner-map-head{align-items:flex-start}.map-head-actions{align-items:flex-end;flex-direction:column}
+}
+
+@media(max-width:680px){
+  .planner-page .nav{position:sticky}.planner-workspace{padding:28px 10px 56px}.workspace-head{gap:12px;margin-top:0}.workspace-head h1{font-size:34px}.workspace-head p{font-size:12px}
+  .planner-map-card{padding:6px;border-radius:17px}.planner-map-head{min-height:96px;padding:10px;align-items:stretch}.planner-map-head h2{font-size:18px}.map-head-actions{align-items:flex-end;justify-content:space-between;flex-direction:row}.map-head-actions .legend{display:none}.fullscreen-map{padding:0 12px}
+  .planner-city-map,.planner-city-map .amap-canvas{min-height:68dvh}.planner-map-card.map-expanded .planner-map-head{min-height:56px}.planner-map-card.map-expanded .planner-city-map,.planner-map-card.map-expanded .amap-canvas{height:calc(100dvh - 70px)}
+  .planner-weather{margin:10px 0}.place-console{padding:14px;border-radius:17px}.console-head{align-items:flex-start}.selection-compact{min-width:auto;display:grid;grid-template-columns:auto auto}.selection-compact button{grid-column:1/-1}
+  .category-chart{padding:11px}.compact-filters{flex-wrap:nowrap;overflow-x:auto;padding-bottom:5px}.compact-filters .filter{flex:0 0 auto}
+  .compact-place-grid{grid-template-columns:1fr}.compact-place-grid .place-select{min-height:82px}.planner-console{border-radius:17px}.planner-console .planner-controls,.planner-console .planner-result{padding:24px 16px}
+  .amap-status{bottom:190px}.segment-board{max-height:165px}
+}
+
+@media(prefers-reduced-motion:reduce){.planner-map-card,.compact-place-grid .place-card{transition:none}}

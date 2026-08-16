@@ -21,7 +21,7 @@
   script.onload=init;
   document.head.appendChild(script);
 
-  let map,currentIds=[],accurateStart=null,activeMode='smart',renderToken=0;
+  let map,currentIds=[],accurateStart=null,activeMode='smart',renderToken=0,hoverInfo=null;
   let overlays=[],routeOverlays=[];
   const pointCache=readCache();
   const routeCache=new Map();
@@ -50,7 +50,7 @@
     window.buildPlan=function(){baseBuildPlan();if(selected.length)renderPlannerMap()};
     startPlace.addEventListener('input',debounce(async()=>{accurateStart=null;await resolveTypedStart();window.buildPlan()},550));
     document.getElementById('locate')?.addEventListener('click',()=>setTimeout(async()=>{if(userLocation){accurateStart=await convertGps({...userLocation,name:'我的当前位置'});window.buildPlan()}},800));
-    const first=routes[0]?.ids||[];currentIds=[...first];renderMap(first,false);
+    const first=document.body.classList.contains('planner-page')?[]:(routes[0]?.ids||[]);currentIds=[...first];renderMap(first,false);
   }
 
   function debounce(fn,wait){let timer;return(...args)=>{clearTimeout(timer);timer=setTimeout(()=>fn(...args),wait)}}
@@ -93,13 +93,17 @@
   function renderPlannerMap(){const start=window.startPoint(),ordered=orderPlaces(selected.map(byId).filter(Boolean),start);currentIds=ordered.map(p=>p.id);renderMap(currentIds,true)}
   function redrawCurrent(){if(selected.length)renderPlannerMap();else renderMap(currentIds,false)}
   function setStatus(text){if(status)status.textContent=text}
-  function clearOverlays(){if(overlays.length)map.remove(overlays);if(routeOverlays.length)map.remove(routeOverlays);overlays=[];routeOverlays=[];board.innerHTML=''}
+  function clearOverlays(){if(hoverInfo)hoverInfo.close();if(overlays.length)map.remove(overlays);if(routeOverlays.length)map.remove(routeOverlays);overlays=[];routeOverlays=[];board.innerHTML=''}
   function drawMarkers(points,start){
     const all=start?[start,...points]:points;
+    hoverInfo=new AMap.InfoWindow({offset:new AMap.Pixel(0,-38),isCustom:true,autoMove:true});
     all.forEach((p,index)=>{
       const isStart=!!start&&index===0,label=isStart?'起':String(start?index:index+1);
       const marker=new AMap.Marker({position:pointArray(p),anchor:'bottom-center',content:`<div class="amap-marker ${isStart?'start':''}"><span>${label}</span></div>`,zIndex:120});
       const name=new AMap.Marker({position:pointArray(p),anchor:'top-center',offset:new AMap.Pixel(0,7),content:`<div class="amap-marker-name">${escapeHtml(p.name)}</div>`,zIndex:119});
+      const showInfo=()=>{const body=isStart?'自定义行程的出发位置。':escapeHtml(p.summary||'已加入当前行程的地点。'),meta=isStart?'起点':`${escapeHtml(p.category||'景点')} · 建议 ${Number(p.duration||0)} 分钟`;hoverInfo.setContent(`<div class="amap-poi-card"><b>${escapeHtml(p.name)}</b><small>${meta}</small><p>${body}</p>${isStart?'':`<span>${escapeHtml(p.slope||'请留意现场路况')}</span>`}</div>`);hoverInfo.open(map,pointArray(p))};
+      const hideInfo=()=>hoverInfo.close();
+      marker.on('mouseover',showInfo);name.on('mouseover',showInfo);marker.on('mouseout',hideInfo);name.on('mouseout',hideInfo);marker.on('click',showInfo);name.on('click',showInfo);
       overlays.push(marker,name);
     });
     map.add(overlays);map.setFitView(overlays,false,[75,55,130,55],14);

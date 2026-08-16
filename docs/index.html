@@ -10,12 +10,12 @@
   <link rel="stylesheet" href="assets/amap.css">
   <link rel="stylesheet" href="assets/redesign.css">
 </head>
-<body>
+<body class="home-page">
   <a class="skip" href="#main">跳到主要内容</a>
   <header class="nav">
     <a class="brand" href="#top" aria-label="返回首页"><span>才</span><b>跟着才哥游青岛</b></a>
-    <nav aria-label="主要导航"><a href="#routes">推荐路线</a><a href="#places">地点库</a><a href="#planner">智能规划</a></nav>
-    <a class="nav-cta" href="#planner">规划行程</a>
+    <nav aria-label="主要导航"><a href="#routes">推荐路线</a><a href="planner.html">自定义行程</a></nav>
+    <a class="nav-cta" href="planner.html">规划行程</a>
   </header>
 
   <main id="main">
@@ -25,7 +25,7 @@
         <p>一位青岛人整理的全年龄旅行指南</p>
         <h1>跟着才哥<br>游青岛</h1>
         <h2>像本地人一样，走懂青岛。</h2>
-        <div class="hero-actions"><a class="button primary" href="#routes">先看才哥路线</a><a class="button ghost" href="#planner">自己选地点</a></div>
+        <div class="hero-actions"><a class="button primary" href="#routes">先看才哥路线</a><a class="button ghost" href="planner.html">自己选地点</a></div>
       </div>
       <div class="hero-weather" id="heroWeather"><span>青岛今日</span><strong>读取天气中</strong><small>天气会参与规划，不替你制造焦虑</small></div>
       <div class="hero-line" aria-hidden="true"><svg viewBox="0 0 800 240"><path d="M10 205 C130 180 185 70 300 105 S490 220 585 95 S710 35 790 30"/><circle cx="10" cy="205" r="7"/><circle cx="300" cy="105" r="7"/><circle cx="585" cy="95" r="7"/><circle cx="790" cy="30" r="7"/></svg></div>
@@ -36,11 +36,11 @@
     <section class="section route-section" id="routes">
       <header class="section-head"><div><span>才哥推荐路线</span><h2>先在地图上，看懂这一天怎么走</h2></div><p>地图是路线的主角。点击下方不同方案，站点、顺序与介绍会一起更新；确定后再带入智能规划。</p></header>
 
-      <div class="map-stage" aria-labelledby="mapTitle">
+      <div class="map-stage map-fullscreen-target" id="plannerMapCard" aria-labelledby="mapTitle">
         <div class="map-copy">
           <div><span>当前路线</span><h3 id="mapTitle">每一站，都在地图上</h3></div>
           <p id="mapSummary">高德提供地图底图与道路数据，本站标注全部景点和游览顺序。</p>
-          <div class="legend"><i class="sea"></i>地图底图 <i class="route"></i>当前路线 <i class="point"></i>编号地点</div>
+          <div class="map-actions"><div class="legend"><i class="sea"></i>地图底图 <i class="route"></i>当前路线 <i class="point"></i>编号地点</div><button class="fullscreen-map" id="mapFullscreen" type="button" aria-expanded="false" aria-controls="plannerMapCard">全屏查看地图</button></div>
           <div class="amap-config-note" id="amapSetupNote"><b>高德实景地图等待一次配置</b>配置完成后会自动显示完整的多站路线；当前仍可查看本站路线示意。</div>
         </div>
         <div class="city-map">
@@ -65,6 +65,11 @@
         <div class="route-grid" id="routeGrid"></div>
       </div>
       <section class="route-detail" id="routeDetail" aria-live="polite"></section>
+    </section>
+
+    <section class="planner-entry">
+      <div><span>自定义行程</span><h2>想去哪里，由你决定</h2><p>进入独立规划页面，选择地点、设置出发点，在大地图上查看智能排序、分段交通时间和路线注意事项。</p></div>
+      <a class="button primary" href="planner.html">打开自定义行程</a>
     </section>
 
     <section class="section place-section" id="places">
@@ -101,7 +106,7 @@
     </section>
   </main>
 
-  <footer><div><b>跟着才哥游青岛</b><p>免费分享给亲友使用。路线仅供旅行参考，安全与开放信息以现场及官方公告为准。</p></div><div><a href="#routes">路线</a><a href="#places">地点</a><a href="#planner">规划</a></div></footer>
+  <footer><div><b>跟着才哥游青岛</b><p>免费分享给亲友使用。路线仅供旅行参考，安全与开放信息以现场及官方公告为准。</p></div><div><a href="#routes">推荐路线</a><a href="planner.html">自定义行程</a></div></footer>
   <script src="assets/app.js"></script>
   <script src="assets/amap-config.js"></script>
   <script src="assets/amap-enhance.js"></script>
