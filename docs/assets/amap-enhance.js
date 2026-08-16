@@ -104,7 +104,7 @@
     });
     map.add(overlays);map.setFitView(overlays,false,[75,55,130,55],14);
   }
-  function drawFallback(points,start){const seq=start?[start,...points]:points;if(seq.length<2)return;const line=new AMap.Polyline({path:seq.map(pointArray),strokeColor:'#a74b36',strokeWeight:5,strokeOpacity:.7,strokeStyle:'dashed',showDir:true,zIndex:50});routeOverlays.push(line);map.add(line)}
+  function drawFallback(points,start){const seq=start?[start,...points]:points;if(seq.length<2)return;const line=new AMap.Polyline({path:seq.map(pointArray),strokeColor:'#08788a',strokeWeight:5,strokeOpacity:.7,strokeStyle:'dashed',showDir:true,zIndex:50});routeOverlays.push(line);map.add(line)}
   function renderSegmentBoard(points,start){
     const seq=start?[start,...points]:points;if(seq.length<2)return;
     board.innerHTML=seq.slice(1).map((p,i)=>`<article class="segment-card" data-segment="${i}"><header><b>${i+1}</b><span>${escapeHtml(seq[i].name)} → ${escapeHtml(p.name)}</span></header><div class="segment-times"><span data-time="walk"><small>步行</small><strong>计算中</strong></span><span data-time="bus"><small>公交</small><strong>计算中</strong></span><span data-time="car"><small>驾车</small><strong>计算中</strong></span><span data-time="ride"><small>自行车</small><strong>计算中</strong></span><span data-time="ebike"><small>电动车</small><strong>估算中</strong></span></div></article>`).join('');
@@ -127,8 +127,7 @@
   function shouldDraw(mode,a,b){if(activeMode==='smart')return mode===(distanceKm(a,b)<1.5?'walk':distanceKm(a,b)<10?'bus':'car');return mode===activeMode}
   function clearRoutesOnly(){if(routeOverlays.length)map.remove(routeOverlays);routeOverlays=[]}
   function drawRoute(result,index){
-    const colors=['#a74b36','#075c74','#b06b2c','#246b57'];
-    const line=new AMap.Polyline({path:result.path.map(pointArray),strokeColor:colors[index%colors.length],strokeWeight:7,strokeOpacity:.9,showDir:true,lineJoin:'round',zIndex:70});
+    const line=new AMap.Polyline({path:result.path.map(pointArray),strokeColor:'#08788a',strokeWeight:7,strokeOpacity:.9,showDir:true,lineJoin:'round',zIndex:70});
     routeOverlays.push(line);map.add(line);
     const mid=result.path[Math.floor(result.path.length/2)];
     if(mid){const label=new AMap.Marker({position:pointArray(mid),anchor:'center',content:`<div class="route-time-label">${result.duration} 分</div>`,zIndex:100});routeOverlays.push(label);map.add(label)}
